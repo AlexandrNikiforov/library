@@ -29,11 +29,6 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-/*    @PutMapping("/{id}")
-    public BookDto updateBook(@PathVariable Long id, @RequestBody BookDto bookDto) {
-        return bookService.updateBook(id, bookDto);
-    }*/
-
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);

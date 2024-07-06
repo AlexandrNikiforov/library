@@ -47,18 +47,6 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-/*    public BookDto updateBook(Long id, BookDto bookDto) {
-        Optional<BookEntity> optionalBookEntity = bookRepository.findById(id);
-        if (optionalBookEntity.isPresent()) {
-            BookEntity bookEntity = optionalBookEntity.get();
-            bookEntity.setTitle(bookDto.getTitle());
-            bookEntity.setAuthors(bookDto.getAuthors());
-            bookEntity = bookRepository.save(bookEntity);
-            return mapToDto(bookEntity);
-        }
-        return null;
-    }*/
-
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
     }
@@ -76,10 +64,4 @@ public class BookService {
         return bookDto;
     }
 
-/*    private BookEntity mapToEntity(BookDto bookDto) {
-        BookEntity bookEntity = new BookEntity();
-        bookEntity.setTitle(bookDto.getTitle());
-        bookEntity.setAuthors(bookDto.getAuthors());
-        return bookEntity;
-    }*/
 }

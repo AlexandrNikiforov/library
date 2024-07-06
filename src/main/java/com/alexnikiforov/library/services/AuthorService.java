@@ -2,18 +2,38 @@ package com.alexnikiforov.library.services;
 
 import com.alexnikiforov.library.domain.AuthorEntity;
 import com.alexnikiforov.library.dto.AuthorDto;
+import com.alexnikiforov.library.exceptions.SaveToDatabaseException;
 import com.alexnikiforov.library.repositories.AuthorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+
+    public AuthorDto saveAuthor(AuthorDto authorDto) {
+        try {
+            if (authorDto == null) {
+                throw new IllegalArgumentException("AuthorDto cannot be null");
+            }
+
+            AuthorEntity authorEntity = convertToEntity(authorDto);
+            authorEntity = authorRepository.save(authorEntity);
+
+            return convertToDto(authorEntity);
+        } catch (Exception e) {
+            log.error("Cannot save author");
+            throw new SaveToDatabaseException("Failed to save author: ", e);
+        }
+    }
 
     public Set<AuthorEntity> saveAuthors(Set<AuthorDto> authorDtos) {
         Set<AuthorEntity> savedAuthors = new HashSet<>();
@@ -37,4 +57,6 @@ public class AuthorService {
         authorDto.setName(authorEntity.getName());
         return authorDto;
     }
+
+
 }
