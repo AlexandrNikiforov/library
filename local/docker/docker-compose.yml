@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: library_db     # Название базы данных
+      POSTGRES_USER: library_user # Пользователь базы данных
+      POSTGRES_PASSWORD: library_password # Пароль пользователя базы данных
+    ports:
+      - "5432:5432"               # Пробрасываем порт PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
