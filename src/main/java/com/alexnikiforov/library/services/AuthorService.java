@@ -3,13 +3,13 @@ package com.alexnikiforov.library.services;
 import com.alexnikiforov.library.domain.AuthorEntity;
 import com.alexnikiforov.library.dto.AuthorDto;
 import com.alexnikiforov.library.exceptions.SaveToDatabaseException;
+import com.alexnikiforov.library.mappers.AuthorMapper;
 import com.alexnikiforov.library.repositories.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -18,6 +18,7 @@ import java.util.Set;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
 
     public AuthorDto saveAuthor(AuthorDto authorDto) {
         try {
@@ -25,10 +26,10 @@ public class AuthorService {
                 throw new IllegalArgumentException("AuthorDto cannot be null");
             }
 
-            AuthorEntity authorEntity = convertToEntity(authorDto);
+            AuthorEntity authorEntity = authorMapper.convertToEntity(authorDto);
             authorEntity = authorRepository.save(authorEntity);
 
-            return convertToDto(authorEntity);
+            return authorMapper.convertToDto(authorEntity);
         } catch (Exception e) {
             log.error("Cannot save author");
             throw new SaveToDatabaseException("Failed to save author: ", e);
@@ -44,19 +45,5 @@ public class AuthorService {
         }
         return new HashSet<>(authorRepository.saveAll(savedAuthors));
     }
-
-    public AuthorEntity convertToEntity(AuthorDto authorDto) {
-        AuthorEntity authorEntity = new AuthorEntity();
-        authorEntity.setName(authorDto.getName());
-        return authorEntity;
-    }
-
-    public AuthorDto convertToDto(AuthorEntity authorEntity) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(authorEntity.getId());
-        authorDto.setName(authorEntity.getName());
-        return authorDto;
-    }
-
 
 }
