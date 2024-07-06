@@ -40,7 +40,7 @@ public class AuthorService {
         Set<AuthorEntity> savedAuthors = new HashSet<>();
         for (AuthorDto authorDto : authorDtos) {
             AuthorEntity authorEntity = new AuthorEntity();
-            authorEntity.setName(authorDto.getName());
+            authorEntity.setName(authorDto.name());
             savedAuthors.add(authorEntity);
         }
         return new HashSet<>(authorRepository.saveAll(savedAuthors));

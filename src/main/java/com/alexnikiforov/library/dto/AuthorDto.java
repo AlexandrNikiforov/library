@@ -1,9 +1,9 @@
 package com.alexnikiforov.library.dto;
 
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class AuthorDto {
-    private Long id;
-    private String name;
-}
+@Builder
+public record AuthorDto(
+        Long id,
+        String name
+) {}

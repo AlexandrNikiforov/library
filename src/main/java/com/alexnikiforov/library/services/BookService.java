@@ -6,6 +6,7 @@ import com.alexnikiforov.library.dto.AuthorDto;
 import com.alexnikiforov.library.dto.BookDto;
 import com.alexnikiforov.library.exceptions.AuthorNotFoundException;
 import com.alexnikiforov.library.mappers.AuthorMapper;
+import com.alexnikiforov.library.mappers.BookMapper;
 import com.alexnikiforov.library.repositories.AuthorRepository;
 import com.alexnikiforov.library.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +24,17 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
-    private final AuthorMapper authorMapper;
+    private final BookMapper bookMapper;
 
     public BookDto createBook(BookDto bookDto) {
         BookEntity bookEntity = new BookEntity();
-        bookEntity.setTitle(bookDto.getTitle());
+        bookEntity.setTitle(bookDto.title());
 
-        Set<AuthorDto> authorDtoSet = bookDto.getAuthors();
+        Set<AuthorDto> authorDtoSet = bookDto.authors();
         Set<AuthorEntity> authorEntitiesSet = new HashSet<>();
         if (authorDtoSet != null) {
             for (AuthorDto author : authorDtoSet) {
-                Optional<AuthorEntity> authorEntityOptional = authorRepository.findByName(author.getName());
+                Optional<AuthorEntity> authorEntityOptional = authorRepository.findByName(author.name());
                 authorEntityOptional.orElseThrow(() -> new AuthorNotFoundException("Author not found. Create an author first"));
                 authorEntityOptional
                         .ifPresent((authorEntitiesSet::add));
@@ -42,36 +43,23 @@ public class BookService {
         }
         bookEntity = bookRepository.save(bookEntity);
 
-        return mapToDto(bookEntity);
+        return bookMapper.mapToDto(bookEntity);
     }
 
     public BookDto getBookById(Long id) {
         Optional<BookEntity> optionalBookEntity = bookRepository.findById(id);
-        return optionalBookEntity.map(this::mapToDto).orElse(null);
+        return optionalBookEntity.map(bookMapper::mapToDto).orElse(null);
     }
 
     public List<BookDto> getAllBooks() {
         List<BookEntity> bookEntities = bookRepository.findAll();
         return bookEntities.stream()
-                .map(this::mapToDto)
+                .map(bookMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
-    }
-
-    private BookDto mapToDto(BookEntity bookEntity) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(bookEntity.getId());
-        bookDto.setTitle(bookEntity.getTitle());
-        Set<AuthorDto> authorDtoSet = bookEntity.getAuthors()
-                .stream().map(
-                        (authorEntity) -> authorMapper.convertToDto(authorEntity)
-                ).collect(Collectors.toSet());
-        bookDto.setAuthors(authorDtoSet);
-
-        return bookDto;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.alexnikiforov.library.controllers;
 
-import com.alexnikiforov.library.domain.AuthorEntity;
 import com.alexnikiforov.library.dto.AuthorDto;
 import com.alexnikiforov.library.services.AuthorService;
 import lombok.RequiredArgsConstructor;
